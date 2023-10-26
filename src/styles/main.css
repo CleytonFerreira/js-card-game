@@ -33,11 +33,13 @@
 }
 
 .container__left {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    border: 1px solid red;
     width: 35%;
     min-width: 300px;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
 }
 
 .container__right {
@@ -73,7 +75,7 @@
     font-size: 1rem;
 }
 
-.cardbox__container {
+.card-box__container {
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -104,7 +106,7 @@
     display: none;
 }
 
-.cardbox {
+.card-box {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -117,4 +119,12 @@
     width: 8rem;
     height: 11.2rem;
     border-radius: 8px;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: scale(1.2);
 }
