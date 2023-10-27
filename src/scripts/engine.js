@@ -2,16 +2,16 @@ const state = {
     score: {
         playerScore: 0,
         computerScore: 0,
-        scoreBox: document.getElementById("score_points")
+        scoreBox: document.getElementById('score_points')
     },
     cardSprites: {
-        avatar: document.getElementById("card-image"),
-        name: document.getElementById("card-name"),
-        type: document.getElementById("card-type")
+        avatar: document.getElementById('card-image'),
+        name: document.getElementById('card-name'),
+        type: document.getElementById('card-type')
     },
     fieldCards: {
-        player: document.getElementById("player-field-card"),
-        computer: document.getElementById("computer-field-card"),
+        player: document.getElementById('player-field-card'),
+        computer: document.getElementById('computer-field-card'),
 
     },
     playerSides: {
@@ -21,7 +21,11 @@ const state = {
         computerBOX: document.querySelector('#computer-cards')
     },
     actions: {
-        button: document.getElementById("next-duel")
+        button: document.getElementById('next-duel'),
+    },
+    sounds: {
+        speaker: document.querySelector('.fa-volume-xmark'),
+        bgm: document.getElementById('bgm')
     }
 };
 
@@ -82,17 +86,37 @@ async function createCardImage(idCard, fieldSide) {
 async function setCardsField(cardId) {
     await removeAllCardsImages();
     let computerCardId = await getRandomCardId();
-
-    state.fieldCards.player.style.display = 'block';
-    state.fieldCards.computer.style.display = 'block';
-
-    state.fieldCards.player.src = cardData[cardId].img;
-    state.fieldCards.computer.src = cardData[computerCardId].img;
+    await showHiddenCardFieldsImages(true);
+    await hideCardsDetails();
+    await drawCardsInField(cardId, computerCardId);
 
     let duelResults = await checkDuelResults(cardId, computerCardId);
 
     await updateScore();
     await drawButton(duelResults);
+}
+
+async function drawCardsInField(cardId, computerCardId) {
+    state.fieldCards.player.src = cardData[cardId].img;
+    state.fieldCards.computer.src = cardData[computerCardId].img;
+}
+
+async function hideCardsDetails() {
+    state.cardSprites.avatar.src = '';
+    state.cardSprites.name.innerText = '';
+    state.cardSprites.type.innerText = '';
+}
+
+async function showHiddenCardFieldsImages(value) {
+    if (value === true) {
+        state.fieldCards.player.style.display = 'block';
+        state.fieldCards.computer.style.display = 'block';
+    }
+
+    if (value === false) {
+        state.fieldCards.player.style.display = 'none';
+        state.fieldCards.computer.style.display = 'none';
+    }
 }
 
 async function drawButton(text) {
@@ -161,10 +185,24 @@ async function playAudio(status) {
 
     try {
         audio.play();
-    } catch{}
+    } catch { }
+}
+
+function toggleBGM() {
+    if (state.sounds.speaker.classList.contains('fa-volume-xmark')) {
+        state.sounds.speaker.classList.remove('fa-volume-xmark');
+        state.sounds.speaker.classList.add('fa-volume-high');
+        state.sounds.bgm.play()
+    }
+    else {
+        state.sounds.speaker.classList.remove('fa-volume-high');
+        state.sounds.speaker.classList.add('fa-volume-xmark');
+        state.sounds.bgm.pause()
+    }
 }
 
 function init() {
+    showHiddenCardFieldsImages(false);
     drawCards(5, state.playerSides.player1);
     drawCards(5, state.playerSides.computer);
 }
